@@ -68,7 +68,7 @@ startButton.addEventListener("click", function() {
 
     playerChoice = prompt("Vyber si: K pre Kamen, P pre Papier alebo N pre Noznice");
 
-    //Convert input, check if valid
+    // Convert input, check if valid
     if (playerChoice === "K") {
         playerChoice = "kamen";
     } else if (playerChoice === "P") {
@@ -76,11 +76,11 @@ startButton.addEventListener("click", function() {
     } else if (playerChoice === "N") {
         playerChoice = "noznice";
     } else {
-        alert("Neplatne volba. Prosim skuste znova");
+        alert("Neplatna volba. Prosim skuste znova");
         return;
     }
 
-    //Compare choices and determine winner, count score
+    // Compare choices and determine result, count score
     if (playerChoice === computerChoice) {
         alert("Je to remiza! Obidvaja ste si vybrali " + playerChoice + ".");
         roundResult = 0;
@@ -116,11 +116,11 @@ startButton.addEventListener("click", function() {
         }
     }
 
-    //Add to history array
+    // Add to history array
     history.push(playerChoice + " vs. " + computerChoice + " - " + (roundResult > 0 ? "player wins" : roundResult < 0 ? "computer wins" : "tie"));
     choices.set(playerChoice, choices.get(playerChoice) + 1);
     choices.set(computerChoice, choices.get(computerChoice) + 1);
-    
+
     console.log("Score:", score);
     console.log("History:", history);
     console.log("Choices:", choices);
