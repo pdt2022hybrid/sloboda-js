@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kamen Papier Noznice</title>
+    <style>
+        body {
+            margin-top: 10%;
+            text-align: center;
+        }
+
+        #start-button {
+            display: block;
+            margin: 0 auto;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #337ab7;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #start-button:hover {
+            background-color: #286090;
+        }
+        #start-button:active {
+            background-color: #555;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Vitaj v hre Kamen Papier Noznice!</h1>
+    <button id="start-button">Start</button>
+
+<script>
+
+let score = {
+    player: 0,
+    computer: 0
+};
+let history = [];
+let roundResult = 0;
+let choices = new Map();
+    choices.set("kamen", 0);
+    choices.set("papier", 0);
+    choices.set("noznice", 0);
+    
+let startButton = document.getElementById("start-button");
+
+startButton.addEventListener("click", function() {
+    
+    alert("Vitaj v hre Kamen Papier Noznice! Hra sa teraz zacne. " + 
+        "Pocitac si nahodne vyberie Kamen, Papier alebo Noznice, a vy si vyberiete K pre Kamen, P pre Papier alebo N pre Noznice v alerte ktory sa vam zobrazi.");
+
+    let computerChoice = Math.random();
+    if (computerChoice < 0.34) {
+        computerChoice = "kamen";
+    } else if (computerChoice <= 0.67) {
+        computerChoice = "papier";
+    } else {
+        computerChoice = "noznice";
+    }
+
+    playerChoice = prompt("Vyber si: K pre Kamen, P pre Papier alebo N pre Noznice");
+
+    //Convert input, check if valid
+    if (playerChoice === "K") {
+        playerChoice = "kamen";
+    } else if (playerChoice === "P") {
+        playerChoice = "papier";
+    } else if (playerChoice === "N") {
+        playerChoice = "noznice";
+    } else {
+        alert("Neplatne volba. Prosim skuste znova");
+        return;
+    }
+
+    //Compare choices and determine winner, count score
+    if (playerChoice === computerChoice) {
+        alert("Je to remiza! Obidvaja ste si vybrali " + playerChoice + ".");
+        roundResult = 0;
+    } else if (playerChoice === "kamen") {
+        if (computerChoice === "noznice") {
+            alert("Vyhral si! Kamen porazil Noznice.");
+            roundResult = 1;
+            score.player++;
+        } else {
+            alert("Pocitac vyhral! Papier porazil Kamen.");
+            roundResult = -1;
+            score.computer++;
+        }
+    } else if (playerChoice === "papier") {
+        if (computerChoice === "kamen") {
+            alert("Vyhral si! Papier porazil Kamen.");
+            roundResult = 1;
+            score.player++;
+        } else {
+            alert("Pocitac vyhral! Noznice porazili Papier.");
+            roundResult = -1;
+            score.computer++;
+        }
+    } else if (playerChoice === "noznice") {
+        if (computerChoice === "kamen") {
+            alert("Pocitac vyhral! Kamen porazil Noznice.");
+            roundResult = 1;
+            score.computer++;
+        } else {
+            alert("Vyhral si! Noznice porazili Papier.");
+            roundResult = -1;
+            score.player++;
+        }
+    }
+
+    //Add to history array
+    history.push(playerChoice + " vs. " + computerChoice + " - " + (roundResult > 0 ? "player wins" : roundResult < 0 ? "computer wins" : "tie"));
+    choices.set(playerChoice, choices.get(playerChoice) + 1);
+    choices.set(computerChoice, choices.get(computerChoice) + 1);
+    
+    console.log("Score:", score);
+    console.log("History:", history);
+    console.log("Choices:", choices);
+    console.log("-------------------------------------------");
+});
+
+</script>
+</body>
+</html>
