@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Kamen Papier Noznice</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <style>
+        body {
+            text-align: center;
+            margin-top: 5%;
+        }
+        #select {
+            display: flex;
+            justify-content: center;
+        }
+        #score {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        #history {
+            margin-top: 20px;
+            margin-left: 41.5%;
+            text-align: left;
+        }
+        button {
+            margin: 0 auto;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #337ab7;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        } button:hover {
+            background-color: #286090;
+        } button:active {
+            background-color: #555;
+        }
+    </style>
+
+</head>
+<body>
+
+    <h1>Kamen Papier Noznice</h1>
+    <button id="startBtn">Start Game</button>
+    <div id="select" style="display: none;">
+        <button id="kamenBtn">Kamen</button>
+        <button id="papierBtn">Papier</button>
+        <button id="nozniceBtn">Noznice</button>
+    </div>
+    <br>
+    <div id="result"></div>
+    <div id="score"></div>
+    <br>
+    <label>Player name: <input type="text" id="name" value="Player"></label>
+    <br><br>
+    <h2 id="history_title" style="display: none;">Result History</h2>
+    <ol id="history"></ol>
+
+    <script>
+
+        class Player {
+
+            constructor(name) {
+                this.name = name;
+                this.win = 0;
+                this.tie = 0;
+                this.lose = 0;
+                this.choices = new Map();
+                    this.choices.set("kamen", 0);
+                    this.choices.set("papier", 0);
+                    this.choices.set("noznice", 0);
+            }
+
+        }
+
+        class Game {
+
+            constructor() {
+                this.players = new Map();
+                this.addPlayer("Computer");
+                this.currentPlayer = "Player";
+                this.playerScore = 0;
+                this.computerScore = 0;
+                this.history = [];
+                this.score = new Map();
+            }
+
+            addPlayer(name) {
+                if(this.players.has(name)) return;
+                let player = new Player(name);
+                this.players.set(player.name, player);
+            }
+
+            getPlayer(name) {
+                if(!this.players.has(name)) this.addPlayer(name);
+                return this.players.get(name);
+            }
+
+            setPlayer(name, player) { this.players.set(name, player); }
+            setChoices(name, choices) { return this.players.get(name).choices; }
+            
+            play(playerChoice) {
+                this.updateName();
+                this.addPlayer(this.currentPlayer);
+                let computerChoice = Math.random();
+                if (computerChoice < 0.34) {
+                    computerChoice = "kamen";
+                } else if (computerChoice <= 0.67) {
+                    computerChoice = "papier";
+                } else {
+                    computerChoice = "noznice";
+                }
+
+                let result;
+                if (playerChoice === computerChoice) {
+                    result = "Tie!";
+                    let temp = this.getPlayer("Computer");
+                    temp.tie++;
+                    this.setPlayer("Computer", temp);
+                    temp = this.getPlayer(this.currentPlayer);
+                    temp.tie++;
+                    this.setPlayer(temp.name, temp);
+                } else if (playerChoice === "kamen" && computerChoice === "noznice") {
+                    result = "You win!";
+                    this.playerScore++;
+                } else if (playerChoice === "kamen" && computerChoice === "papier") {
+                    result = "You lose.";
+                    this.computerScore++;
+                } else if (playerChoice === "papier" && computerChoice === "kamen") {
+                    result = "You win!";
+                    this.playerScore++;
+                } else if (playerChoice === "papier" && computerChoice === "noznice") {
+                    result = "You lose.";
+                    this.computerScore++;
+                } else if (playerChoice === "noznice" && computerChoice === "kamen") {
+                    result = "You lose.";
+                    this.computerScore++;
+                } else if (playerChoice === "noznice" && computerChoice === "papier") {
+                    result = "You win!";
+                    this.playerScore++;
+                }
+
+                this.history.push(`${this.currentPlayer}: ${playerChoice} vs. Computer: ${computerChoice} -  ${result}`);
+                /*if() 
+                choices.set(playerChoice, choices.get(playerChoice) + 1);
+                choices.set(computerChoice, choices.get(computerChoice) + 1);*/
+
+                $("#result").text(result);
+                $("#score").text(`Player: ${this.playerScore} Computer: ${this.computerScore}`);
+                $("#history").append(`<li>${this.history[this.history.length-1]}</li>`);
+            }
+
+            updateName() {
+                let name = $("#name").val().trim();
+                if(name.includes("Computer") || name == "") {
+                    this.currentPlayer = "Player";
+                    $("#name").val("Player");
+                } else this.currentPlayer = name;
+            }
+        }
+
+        let game = new Game();
+
+        $(document).ready(() => {
+            $("#startBtn").click(() => {
+                $("#startBtn").hide();
+                $("#select").css("display", "block");
+                $("#history_title").css("display", "block");
+            });
+
+            $("#kamenBtn").click(() => {
+                game.play("kamen");
+            });
+
+            $("#papierBtn").click(() => {
+                game.play("papier");
+            });
+
+            $("#nozniceBtn").click(() => {
+                game.play("noznice");
+            });
+        });
+    </script>
+
+</body>
+</html>
